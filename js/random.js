@@ -31,6 +31,6 @@ const getRandomFloat = (min, max, digits) => {
 /**
   *Возвращает случайный элемент из массива
   */
-const getRandomItem = (sourceList) => sourceList[getRandomInt(1, sourceList.lenght - 1)];
+const getRandomItem = (sourceList) => sourceList[getRandomInt(0, sourceList.length - 1)];
 
 export { getRandomInt, getRandomFloat, getRandomItem };

@@ -1,11 +1,10 @@
 import { getRandomInt, getRandomFloat, getRandomItem } from './random.js';
 
 //Константы для генерации данных
-const SIMILAR_ADVERT_COUNT = 10;
 const MAX_ROOM_COUNT = 5;
 const MAX_GUEST_COUNT = 6;
-const MIN_PRICE = 2000;
-const MAX_PRICE = 65000;
+const MIN_PRICE = 1000;
+const MAX_PRICE = 9500;
 
 // Заголовки объявлений
 const ADVERT_TITLES = [
@@ -63,7 +62,7 @@ const createAdvert = (_value, index) => {
   const lng = getRandomFloat(139.70000, 139.80000, 5);
   return {
     author: {
-      avatar: createAvatarAdress(index)
+      avatar: createAvatarAdress(index + 1)
     },
     offer: {
       title: getRandomItem(ADVERT_TITLES),
@@ -85,7 +84,7 @@ const createAdvert = (_value, index) => {
   };
 };
 
-// Генерация массива данных
-const similarAdverts = Array.from({ length: SIMILAR_ADVERT_COUNT }, createAdvert);
+// Функция генерациии массива данных
+const createAdverts = (count) => Array.from({ length: count }, createAdvert);
 
-export { similarAdverts };
+export { createAdverts };
