@@ -3,8 +3,8 @@ import { getRandomInt, getRandomFloat, getRandomItem } from './random.js';
 //Константы для генерации данных
 const MAX_ROOM_COUNT = 5;
 const MAX_GUEST_COUNT = 6;
-const MIN_PRICE = 2000;
-const MAX_PRICE = 65000;
+const MIN_PRICE = 1000;
+const MAX_PRICE = 9500;
 
 // Заголовки объявлений
 const ADVERT_TITLES = [
