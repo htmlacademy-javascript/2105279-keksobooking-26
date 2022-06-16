@@ -1,7 +1,6 @@
 import { getRandomInt, getRandomFloat, getRandomItem } from './random.js';
 
 //Константы для генерации данных
-const SIMILAR_ADVERT_COUNT = 10;
 const MAX_ROOM_COUNT = 5;
 const MAX_GUEST_COUNT = 6;
 const MIN_PRICE = 2000;
@@ -85,7 +84,7 @@ const createAdvert = (_value, index) => {
   };
 };
 
-// Генерация массива данных
-const similarAdverts = Array.from({ length: SIMILAR_ADVERT_COUNT }, createAdvert);
+// Функция генерациии массива данных
+const createAdverts = (count) => Array.from({ length: count }, createAdvert);
 
-export { similarAdverts };
+export { createAdverts };
