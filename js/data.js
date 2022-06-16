@@ -52,7 +52,7 @@ const createRandomLenghtList = (sourceList) => {
 /**
  *Возврвщает форматированную строку адреса.
   */
-const createAvatarAdress = (index) => `/img/avatars/user${index > 9 ? '' : '0'}${index}.png`;
+const createAvatarAdress = (index) => `./img/avatars/user${index > 9 ? '' : '0'}${index}.png`;
 
 /**
  *Возврвщает сгененированый объект с "объявлением"
