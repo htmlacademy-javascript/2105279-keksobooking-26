@@ -52,7 +52,7 @@ const createRandomLenghtList = (sourceList) => {
 /**
  *Возврвщает форматированную строку адреса.
   */
-const createAvatarAdress = (index) => `./img/avatars/user${index > 9 ? '' : '0'}${index}.png`;
+const createAvatarAdress = (index) => `/img/avatars/user${index > 9 ? '' : '0'}${index}.png`;
 
 /**
  *Возврвщает сгененированый объект с "объявлением"
@@ -62,7 +62,7 @@ const createAdvert = (_value, index) => {
   const lng = getRandomFloat(139.70000, 139.80000, 5);
   return {
     author: {
-      avatar: createAvatarAdress(index)
+      avatar: createAvatarAdress(index + 1)
     },
     offer: {
       title: getRandomItem(ADVERT_TITLES),
