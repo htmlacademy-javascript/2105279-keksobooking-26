@@ -8,9 +8,9 @@ const mapFiltersList = document.querySelectorAll('.map__filters select, .map__fi
  */
 const disableActivity = () => {
   adForm.classList.add('ad-form--disabled');
-  adFormList.forEach((elemrnt) => elemrnt.setAttribute('disabled', ''));
+  adFormList.forEach((element) => element.setAttribute('disabled', ''));
   mapFiltersForm.classList.add('ad-form--disabled');
-  mapFiltersList.forEach((elemrnt) => elemrnt.setAttribute('disabled', ''));
+  mapFiltersList.forEach((element) => element.setAttribute('disabled', ''));
 };
 
 /**
@@ -18,9 +18,9 @@ const disableActivity = () => {
  */
 const enableActivity = () => {
   adForm.classList.remove('ad-form--disabled');
-  adFormList.forEach((elemrnt) => elemrnt.removeAttribute('disabled'));
+  adFormList.forEach((element) => element.removeAttribute('disabled'));
   mapFiltersForm.classList.remove('ad-form--disabled');
-  mapFiltersList.forEach((elemrnt) => elemrnt.removeAttribute('disabled'));
+  mapFiltersList.forEach((element) => element.removeAttribute('disabled'));
 };
 
 // По умолчанию страница в неактивном состоянии
