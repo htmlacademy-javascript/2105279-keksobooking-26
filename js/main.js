@@ -1,1 +1,1 @@
-import './create-card.js';
+import './switching-activity.js';
