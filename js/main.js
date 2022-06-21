@@ -1,1 +1,1 @@
-import './switching-activity.js';
+import './form-validate.js';
