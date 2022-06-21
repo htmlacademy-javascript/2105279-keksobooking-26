@@ -84,3 +84,11 @@ roomCount.addEventListener('input', () => {
   pristine.validate(capacity);
 });
 
+
+// Синхронизация времени въезда и выезда
+
+const timein = document.querySelector('#timein');
+const timeout = document.querySelector('#timeout');
+
+timein.addEventListener('input', () => (timeout.value = timein.value));
+timeout.addEventListener('input', () => (timein.value = timeout.value));
