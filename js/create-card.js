@@ -61,6 +61,3 @@ similarAdverts.forEach(({ author, offer }) => {
 
   similarListFragment.append(cardElement);
 });
-
-// Отрисовка только первого элемента
-document.querySelector('#map-canvas').append(similarListFragment.firstChild);
