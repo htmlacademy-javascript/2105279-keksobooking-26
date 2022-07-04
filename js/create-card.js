@@ -24,13 +24,16 @@ similarAdverts.forEach(({ author, offer }) => {
       element.textContent = content;
     }
     else {
-      element.hidden = true;
+      element.setAttribute('hidden', true);
     }
   };
 
   replaceTextContent('.popup__title', offer.title);
   replaceTextContent('.popup__text--address', offer.address);
-  replaceTextContent('.popup__text--price', `${offer.price} ₽/ночь`, !!offer.price);
+  replaceTextContent('.popup__text--price span', offer.price);
+  if (!offer.price) {
+    replaceTextContent('.popup__text--price', offer.price);
+  }
   replaceTextContent('.popup__type', OFFER_TYPE[offer.type]);
   replaceTextContent('.popup__text--capacity', `${offer.rooms} комнаты для ${offer.guests} гостей`, !!offer.rooms && !!offer.guests);
   replaceTextContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`, !!offer.checkin && !!offer.checkout);
