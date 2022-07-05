@@ -27,6 +27,6 @@ const enableActivity = () => {
 };
 
 // По умолчанию страница в неактивном состоянии
-// disableActivity();
+disableActivity();
 
 export { disableActivity, enableActivity };
