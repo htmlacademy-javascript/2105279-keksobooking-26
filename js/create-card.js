@@ -1,4 +1,6 @@
 
+import { createAdverts } from './data.js';
+
 const OFFER_TYPE = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
@@ -7,11 +9,9 @@ const OFFER_TYPE = {
   hotel: 'Отель'
 };
 
-import { createAdverts } from './data.js';
-
 const similarAdverts = createAdverts(10);
 const cardAdvertTemplate = document.querySelector('#card').content.querySelector('.popup');
-const similarListFragment = document.createDocumentFragment();
+const similarCards = [];
 
 // Заполнение элементов данными на основе шаблона
 similarAdverts.forEach(({ author, offer }) => {
@@ -59,5 +59,7 @@ similarAdverts.forEach(({ author, offer }) => {
 
   cardElement.querySelector('.popup__avatar').src = author.avatar;
 
-  similarListFragment.append(cardElement);
+  similarCards.push(cardElement);
 });
+
+export { similarAdverts, similarCards };
