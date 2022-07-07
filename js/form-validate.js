@@ -37,22 +37,56 @@ form.addEventListener('submit', (evt) => {
   }
 });
 
-
-// Проверка цены за ночь
+// Проверка цены за ночь и подключение слайдера
 
 const typeHouse = document.querySelector('#type');
 const priceHouse = document.querySelector('#price');
+const slider = document.querySelector('.ad-form__slider');
 
 const getMinCost = () => MIN_COST[typeHouse.value];
 const getCostErrorMessage = () => `${TRANSLATE_TYPE_HOUSE[typeHouse.value]} не дешевле ${getMinCost()}`;
 
 pristine.addValidator(priceHouse, (value) => (value >= getMinCost()), getCostErrorMessage);
 
-typeHouse.addEventListener('input', () => {
-  priceHouse.placeholder = getMinCost();
-  pristine.validate();
+noUiSlider.create(slider, {
+  range: {
+    min: 0,
+    '40%': 5000,
+    '60%': 10000,
+    max: 100000,
+  },
+  padding: [getMinCost(), 0],
+  start: getMinCost(),
+  step: 1,
+  connect: 'lower',
+  format: {
+    to: function (value) {
+      return value.toFixed(0);
+    },
+    from: function (value) {
+      return parseFloat(value);
+    },
+  },
 });
 
+typeHouse.addEventListener('input', () => {
+  priceHouse.placeholder = getMinCost();
+  slider.noUiSlider.updateOptions({
+    padding: [getMinCost(), 0]
+  });
+  if (priceHouse.value) {
+    pristine.validate(priceHouse);
+  }
+});
+
+priceHouse.addEventListener('input', () => {
+  slider.noUiSlider.set(priceHouse.value);
+});
+
+slider.noUiSlider.on('slide', () => {
+  priceHouse.value = slider.noUiSlider.get();
+  pristine.validate(priceHouse);
+});
 
 // Синхронизация количества комнат и мест
 
