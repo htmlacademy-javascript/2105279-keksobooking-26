@@ -1,6 +1,3 @@
-
-import { createAdverts } from './data.js';
-
 const OFFER_TYPE = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
@@ -9,15 +6,13 @@ const OFFER_TYPE = {
   hotel: 'Отель'
 };
 
-const similarAdverts = createAdverts(10);
 const cardAdvertTemplate = document.querySelector('#card').content.querySelector('.popup');
-const similarCards = [];
 
-// Заполнение элементов данными на основе шаблона
-similarAdverts.forEach(({ author, offer }) => {
+// Создание элемента с данными на основе шаблона
+const createCard = ({ author, offer }) => {
   const cardElement = cardAdvertTemplate.cloneNode(true);
 
-  // Функция для замены содержимого данными, либо скрытие элемента, если данных для него нет
+  // Функция для замены содержимого данными, либо сокрытие элемента, если данных для него нет
   const replaceTextContent = (selector, content, check = true) => {
     const element = cardElement.querySelector(selector);
     if (content && check) {
@@ -59,7 +54,7 @@ similarAdverts.forEach(({ author, offer }) => {
 
   cardElement.querySelector('.popup__avatar').src = author.avatar;
 
-  similarCards.push(cardElement);
-});
+  return cardElement;
+};
 
-export { similarAdverts, similarCards };
+export { createCard };
