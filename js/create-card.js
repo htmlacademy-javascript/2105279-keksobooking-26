@@ -36,14 +36,15 @@ const createCard = ({ author, offer }) => {
 
   // Удаление элементов списка не соответствюэших данным с списке 'особенностей'
   const featureElements = cardElement.querySelectorAll('.popup__feature');
-  for (let i = 0; i < featureElements.length; i++) {
-    if (offer.features !== undefined) {
-      if (!offer.features.some((feature) => featureElements[i].classList.contains(`popup__feature--${feature}`))) {
-        featureElements[i].remove();
+
+  if (offer.features === undefined) {
+    featureElements[0].parentElement.remove();
+  } else {
+    featureElements.forEach((element) => {
+      if (!offer.features.some((feature) => element.classList.contains(`popup__feature--${feature}`))) {
+        element.remove();
       }
-    } else {
-      featureElements[i].remove();
-    }
+    });
   }
 
   // Добавление списка изображений по шаблону
