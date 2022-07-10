@@ -37,7 +37,11 @@ const createCard = ({ author, offer }) => {
   // Удаление элементов списка не соответствюэших данным с списке 'особенностей'
   const featureElements = cardElement.querySelectorAll('.popup__feature');
   for (let i = 0; i < featureElements.length; i++) {
-    if (!offer.features.some((feature) => featureElements[i].classList.contains(`popup__feature--${feature}`))) {
+    if (offer.features !== undefined) {
+      if (!offer.features.some((feature) => featureElements[i].classList.contains(`popup__feature--${feature}`))) {
+        featureElements[i].remove();
+      }
+    } else {
       featureElements[i].remove();
     }
   }
@@ -46,14 +50,14 @@ const createCard = ({ author, offer }) => {
   const photoTemplate = cardElement.querySelector('.popup__photo').cloneNode(true);
   const photosElement = cardElement.querySelector('.popup__photos');
   photosElement.innerHTML = '';
-  offer.photos.forEach((photo) => {
-    const photoElement = photoTemplate.cloneNode(true);
-    photoElement.src = photo;
-    photosElement.append(photoElement);
-  });
-
+  if (offer.photos !== undefined) {
+    offer.photos.forEach((photo) => {
+      const photoElement = photoTemplate.cloneNode(true);
+      photoElement.src = photo;
+      photosElement.append(photoElement);
+    });
+  }
   cardElement.querySelector('.popup__avatar').src = author.avatar;
-
   return cardElement;
 };
 
