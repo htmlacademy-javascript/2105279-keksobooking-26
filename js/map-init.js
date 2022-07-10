@@ -14,8 +14,8 @@ const icon = L.icon({
 
 const newIcon = L.icon({
   iconUrl: './img/main-pin.svg',
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconSize: [52, 52],
+  iconAnchor: [26, 52],
 });
 
 // Инициализация карты
