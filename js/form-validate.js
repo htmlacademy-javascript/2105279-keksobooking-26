@@ -96,25 +96,24 @@ typeHouseElement.addEventListener('input', () => {
   }
 });
 
-// Валидация количества комнат и мест
 
 // Подходит ли опция по количеству мест, выбранному количеству комнат
 const isCorrectCapacity = (capacityValue) => CAPACITY_OPTIONS[roomCountElement.value].some((value) => (+capacityValue === +value));
 
 // Запретить выбор неподходящего числа мест
 const selectCapacityOption = () => {
-  for (let i = 0; i < capacityOptionElements.length; i++) {
-    const capacityOption = capacityOptionElements[i];
-    if (isCorrectCapacity(capacityOption.value)) {
-      capacityOption.removeAttribute('disabled');
+  for (const element of capacityOptionElements) {
+    if (isCorrectCapacity(element.value)) {
+      element.removeAttribute('disabled');
     } else {
-      capacityOption.setAttribute('disabled', '');
+      element.setAttribute('disabled', '');
     }
   }
 };
 
 selectCapacityOption();
 
+// Валидация количества комнат и мест
 pristine.addValidator(capacityElement, (value) => isCorrectCapacity(value), 'Это не подходит');
 
 roomCountElement.addEventListener('input', () => {
@@ -138,4 +137,4 @@ const addEventSubmitToForm = (onSuccess) => {
   });
 };
 
-export { addEventSubmitToForm };
+export { addEventSubmitToForm, formElement };

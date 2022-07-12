@@ -43,18 +43,22 @@ const newMarker = L.marker(
 
 newMarker.addTo(map);
 
+
 const address = document.querySelector('#address');
 newMarker.on('moveend', (evt) => {
   const { lat, lng } = evt.target.getLatLng();
   address.value = `${lat}, ${lng}`;
 });
 
+// Возрат маркера в исходное положение
+const clearNewMarker = () => newMarker.setLatLng(ADDRESS_BEGIN);
+
 // Генерация тестовых данных и добавление маркеров на карту
 
 const markerGroup = L.layerGroup().addTo(map);
 
-const createMarker = (point, element) => {
-  L.marker(point, { icon },)
+const createMarker = (location, element) => {
+  L.marker(location, { icon },)
     .addTo(markerGroup)
     .bindPopup(element);
 };
@@ -66,4 +70,4 @@ const addMarker = (adv) => createMarker(adv.location, createCard(adv));
 const clearGroupMarkers = () => markerGroup.clearLayers();
 
 
-export { addMarker, clearGroupMarkers };
+export { addMarker, clearGroupMarkers, clearNewMarker };

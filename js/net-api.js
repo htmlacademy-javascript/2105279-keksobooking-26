@@ -11,8 +11,7 @@ const sendData = (onSuccess, onFail, body) => {
     {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
-        'Access-Control-Allow-Origin': 'https://26.javascript.pages.academy'
+        'Content-Type': 'multipart/form-data'
       },
       body,
     },

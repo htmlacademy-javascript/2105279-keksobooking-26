@@ -1,23 +1,22 @@
 import { enableSubmitButton, disableSubmitButton } from './switching-activity.js';
-import { addMarker, clearGroupMarkers } from './map-init.js';
-import { addEventSubmitToForm } from './form-validate.js';
+import { addMarker, clearNewMarker } from './map-init.js';
+import { addEventSubmitToForm, formElement } from './form-validate.js';
 import { getData, sendData } from './net-api.js';
 import { showSuccessMessage, createErrorDialog } from './messages.js';
 
 // Добавляем обработчик отправки формы
-const formElement = document.querySelector('.ad-form');
-addEventSubmitToForm(() => {
+const sendSdvData = () => {
   disableSubmitButton();
   sendData(() => {
     showSuccessMessage();
     enableSubmitButton();
-  },
-    createErrorDialog('#error', () => formElement.onsubmit()), new FormData(formElement));
-});
+    clearNewMarker();
+  }, createErrorDialog('#error', sendSdvData, enableSubmitButton), new FormData(formElement));
+};
+addEventSubmitToForm(sendSdvData);
 
 // Получаем данные с сервера и добавляем на карту
 const getAdvData = () => getData((advs) => {
   advs.forEach(addMarker);
-},
-  createErrorDialog('#error_load', getAdvData));
+}, createErrorDialog('#error_load', getAdvData, () => { }));
 getAdvData();

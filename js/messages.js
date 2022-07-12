@@ -6,7 +6,7 @@ const showSuccessMessage = () => {
   setTimeout(() => messageElement.remove(), 5000);
 };
 
-const createErrorDialog = (selector, onSubmit) => {
+const createErrorDialog = (selector, onSubmit, onRreject) => {
   return () => {
     const messageElement = document.querySelector(selector).content.firstElementChild.cloneNode(true);
     const buttonElement = messageElement.querySelector('.error__button');
@@ -19,6 +19,7 @@ const createErrorDialog = (selector, onSubmit) => {
 
     buttonRejectElement.addEventListener('click', () => {
       messageElement.remove();
+      onRreject();
     });
   };
 };
