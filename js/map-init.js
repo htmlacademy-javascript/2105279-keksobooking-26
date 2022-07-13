@@ -19,7 +19,6 @@ const newIcon = L.icon({
 });
 
 // Инициализация карты
-
 const map = L.map('map-canvas')
   .on('viewreset', enableActivity)
   .setView(ADDRESS_BEGIN, 13);
@@ -31,8 +30,7 @@ L.tileLayer(
   },
 ).addTo(map);
 
-// Добавление нового маркера и связывание его с формой
-
+// Добавление маркера для выбора адреса
 const newMarker = L.marker(
   ADDRESS_BEGIN,
   {
@@ -40,27 +38,19 @@ const newMarker = L.marker(
     icon: newIcon,
   },
 );
-
 newMarker.addTo(map);
 
-
-const address = document.querySelector('#address');
-newMarker.on('moveend', (evt) => {
-  const { lat, lng } = evt.target.getLatLng();
-  address.value = `${lat}, ${lng}`;
-});
-
-// Возрат маркера в исходное положение
-const clearNewMarker = () => newMarker.setLatLng(ADDRESS_BEGIN);
-
-// Генерация тестовых данных и добавление маркеров на карту
-
+// Добавление слоя для маркеров с объявлениями
 const markerGroup = L.layerGroup().addTo(map);
 
-const createMarker = (location, element) => {
-  L.marker(location, { icon },)
+/** Возрат маркера в центральное положение */
+const resetNewMarker = () => newMarker.setLatLng(map.getCenter());
+
+// Добавление маркеров на карту
+const createMarker = (location, popupElement) => {
+  L.marker(location, { icon: icon },)
     .addTo(markerGroup)
-    .bindPopup(element);
+    .bindPopup(popupElement);
 };
 
 /** Создание и добавление маркера на карту */
@@ -69,5 +59,5 @@ const addMarker = (adv) => createMarker(adv.location, createCard(adv));
 /** Удаление маркеров с карты */
 const clearGroupMarkers = () => markerGroup.clearLayers();
 
+export { addMarker, clearGroupMarkers, resetNewMarker, newMarker };
 
-export { addMarker, clearGroupMarkers, clearNewMarker };

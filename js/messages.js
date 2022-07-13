@@ -7,21 +7,19 @@ const showSuccessMessage = () => {
 };
 
 const createErrorDialog = (selector, onSubmit, onRreject) => {
-  return () => {
-    const messageElement = document.querySelector(selector).content.firstElementChild.cloneNode(true);
-    const buttonElement = messageElement.querySelector('.error__button');
-    const buttonRejectElement = messageElement.querySelector('.error__reject');
-    document.body.prepend(messageElement);
-    buttonElement.addEventListener('click', () => {
-      messageElement.remove();
-      onSubmit();
-    });
+  const messageElement = document.querySelector(selector).content.firstElementChild.cloneNode(true);
+  const buttonElement = messageElement.querySelector('.error__button');
+  const buttonRejectElement = messageElement.querySelector('.error__reject');
+  document.body.prepend(messageElement);
+  buttonElement.addEventListener('click', () => {
+    messageElement.remove();
+    onSubmit();
+  });
 
-    buttonRejectElement.addEventListener('click', () => {
-      messageElement.remove();
-      onRreject();
-    });
-  };
+  buttonRejectElement.addEventListener('click', () => {
+    messageElement.remove();
+    onRreject();
+  });
 };
 
 export { showSuccessMessage, createErrorDialog };
