@@ -2,16 +2,19 @@ import { enableSubmitButton, disableSubmitButton, enableFilter, disableAFilter, 
 import { map, getAddressBegin } from './map-init.js';
 import { addMarker, clearGroupMarkers } from './map-marker.js';
 import { addEventSubmitToForm, getFormData, onResetForm } from './form-validate.js';
-import { filterData } from './filter-data.js';
+import { filterData, addEventUpdateFilter } from './filter-data.js';
 import { getData, sendData } from './net-api.js';
 import { showSuccessMessage, createErrorDialog } from './messages.js';
+import { debounce } from './debounce.js';
+
+let dataAdvs;
 
 // Обработчик обновления маркеров
-let dataAdvs;
 const onMarkerUpdate = () => {
   clearGroupMarkers();
   filterData(dataAdvs).forEach(addMarker);
 };
+addEventUpdateFilter(debounce(onMarkerUpdate));
 
 // Добавляем обработчик отправки формы
 const onSendData = () => {
@@ -25,15 +28,16 @@ const onSendData = () => {
 addEventSubmitToForm(onSendData);
 
 // Получаем данные с сервера и добавляем на карту
-const onGetAdvData = () => {
+const onGetData = () => {
   enableForm();
   getData((data) => {
     dataAdvs = data;
     onMarkerUpdate();
     enableFilter();
-  }, () => createErrorDialog('#error_load', onGetAdvData, disableAFilter));
+  }, () => createErrorDialog('#error_load', onGetData, disableAFilter));
 };
 
+// Инициализация карты
 map
-  .on('viewreset', onGetAdvData)
+  .on('viewreset', onGetData)
   .setView(getAddressBegin(), 13);
