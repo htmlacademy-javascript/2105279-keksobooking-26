@@ -6,7 +6,6 @@ const ADDRESS_BEGIN = {
 // Начальные координаты
 const getAddressBegin = () => ADDRESS_BEGIN;
 
-// Инициализация карты
 const map = L.map('map-canvas');
 
 L.tileLayer(
