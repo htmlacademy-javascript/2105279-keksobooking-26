@@ -1,8 +1,17 @@
-import { enableSubmitButton, disableSubmitButton } from './switching-activity.js';
-import { addMarker, resetNewMarker } from './map-init.js';
+import { enableSubmitButton, disableSubmitButton, enableFilter, disableAFilter, enableForm } from './switching-activity.js';
+import { map, getAddressBegin } from './map-init.js';
+import { addMarker, clearGroupMarkers } from './map-marker.js';
 import { addEventSubmitToForm, getFormData, onResetForm } from './form-validate.js';
+import { filterData } from './filter-data.js';
 import { getData, sendData } from './net-api.js';
 import { showSuccessMessage, createErrorDialog } from './messages.js';
+
+// Обработчик обновления маркеров
+let dataAdvs;
+const onMarkerUpdate = () => {
+  clearGroupMarkers();
+  filterData(dataAdvs).forEach(addMarker);
+};
 
 // Добавляем обработчик отправки формы
 const onSendData = () => {
@@ -10,14 +19,21 @@ const onSendData = () => {
   sendData(() => {
     showSuccessMessage();
     enableSubmitButton();
-    resetNewMarker();
     onResetForm();
   }, () => createErrorDialog('#error', onSendData, enableSubmitButton), getFormData());
 };
 addEventSubmitToForm(onSendData);
 
 // Получаем данные с сервера и добавляем на карту
-const getAdvData = () => getData((advs) => {
-  advs.forEach(addMarker);
-}, () => createErrorDialog('#error_load', getAdvData, () => { }));
-getAdvData();
+const onGetAdvData = () => {
+  enableForm();
+  getData((data) => {
+    dataAdvs = data;
+    onMarkerUpdate();
+    enableFilter();
+  }, () => createErrorDialog('#error_load', onGetAdvData, disableAFilter));
+};
+
+map
+  .on('viewreset', onGetAdvData)
+  .setView(getAddressBegin(), 13);

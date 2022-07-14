@@ -11,26 +11,39 @@ const disableSubmitButton = () => buttonElement.setAttribute('disabled', '');
 /**
  * Переводит страницу в неактивное состояние
  */
-const disableActivity = () => {
+const disableForm = () => {
   adFormElement.classList.add('ad-form--disabled');
   adFormElements.forEach((element) => element.setAttribute('disabled', ''));
-  mapFiltersElement.classList.add('ad-form--disabled');
-  mapFiltersElements.forEach((element) => element.setAttribute('disabled', ''));
   sliderElement.setAttribute('disabled', '');
 };
 
 /**
- * Переводит страницу в активное состояние
+ * Переводит страницу в неактивное состояние
  */
-const enableActivity = () => {
+const disableAFilter = () => {
+  mapFiltersElement.classList.add('ad-form--disabled');
+  mapFiltersElements.forEach((element) => element.setAttribute('disabled', ''));
+};
+
+/**
+ * Переводит форму в активное состояние
+ */
+const enableForm = () => {
   adFormElement.classList.remove('ad-form--disabled');
   adFormElements.forEach((element) => element.removeAttribute('disabled'));
-  mapFiltersElement.classList.remove('ad-form--disabled');
-  mapFiltersElements.forEach((element) => element.removeAttribute('disabled'));
   sliderElement.removeAttribute('disabled');
 };
 
-// По умолчанию страница в неактивном состоянии
-disableActivity();
+/**
+ * Переводит фильтр в активное состояние
+ */
+const enableFilter = () => {
+  mapFiltersElement.classList.remove('ad-form--disabled');
+  mapFiltersElements.forEach((element) => element.removeAttribute('disabled'));
+};
 
-export { disableActivity, enableActivity, enableSubmitButton, disableSubmitButton };
+// По умолчанию страница в неактивном состоянии
+disableForm();
+disableAFilter();
+
+export { disableAFilter, enableForm, enableFilter, enableSubmitButton, disableSubmitButton };
