@@ -1,3 +1,5 @@
+import { newMarker } from './map-init.js';
+
 const MIN_COST = {
   'bungalow': 0,
   'flat': 1000,
@@ -21,39 +23,43 @@ const CAPACITY_OPTIONS = {
   '100': [0],     // 100 комнат — «не для гостей».
 };
 
+const MAX_COST = 100000;
 
-// Валидация с помощью библиатеки Pristine
+// Получение элементов формы
 
-const form = document.querySelector('.ad-form');
-const pristine = new Pristine(form, {
+const formElement = document.querySelector('.ad-form');
+const resetElement = document.querySelector('.ad-form__reset');
+const typeHouseElement = document.querySelector('#type');
+const priceHouseElement = document.querySelector('#price');
+const sliderElement = document.querySelector('.ad-form__slider');
+const roomCountElement = document.querySelector('#room_number');
+const capacityElement = document.querySelector('#capacity');
+const timeinElement = document.querySelector('#timein');
+const timeoutElement = document.querySelector('#timeout');
+const addressElement = document.querySelector('#address');
+const capacityOptionElements = capacityElement.children;
+
+// Инициализация валидации с помощью библиатеки Pristine
+const pristine = new Pristine(formElement, {
   classTo: 'ad-form__element--validate',
   errorTextParent: 'ad-form__element--validate',
   errorTextClass: 'ad-form__error'
 });
 
-form.addEventListener('submit', (evt) => {
-  if (!pristine.validate()) {
-    evt.preventDefault();
-  }
-});
+// Вспомогательные функции
 
-// Проверка цены за ночь и подключение слайдера
+/** Минимальная цена за ночь */
+const getMinCost = () => MIN_COST[typeHouseElement.value];
+/** Возвращает текст ошибки */
+const getCostErrorMessage = () => `${TRANSLATE_TYPE_HOUSE[typeHouseElement.value]} не дешевле ${getMinCost()}`;
 
-const typeHouse = document.querySelector('#type');
-const priceHouse = document.querySelector('#price');
-const slider = document.querySelector('.ad-form__slider');
-
-const getMinCost = () => MIN_COST[typeHouse.value];
-const getCostErrorMessage = () => `${TRANSLATE_TYPE_HOUSE[typeHouse.value]} не дешевле ${getMinCost()}`;
-
-pristine.addValidator(priceHouse, (value) => (value >= getMinCost()), getCostErrorMessage);
-
-noUiSlider.create(slider, {
+// Подключение и привязка слайдера
+noUiSlider.create(sliderElement, {
   range: {
     min: 0,
     '40%': 5000,
     '60%': 10000,
-    max: 100000,
+    max: MAX_COST,
   },
   padding: [getMinCost(), 0],
   start: getMinCost(),
@@ -69,60 +75,86 @@ noUiSlider.create(slider, {
   },
 });
 
-typeHouse.addEventListener('input', () => {
-  priceHouse.placeholder = getMinCost();
-  slider.noUiSlider.updateOptions({
+sliderElement.noUiSlider.on('slide', () => {
+  priceHouseElement.value = sliderElement.noUiSlider.get();
+  pristine.validate(priceHouseElement);
+});
+
+priceHouseElement.addEventListener('input', () => {
+  sliderElement.noUiSlider.set(priceHouseElement.value);
+});
+
+// Привязка поля адрес к маркеру на карте
+newMarker.on('moveend', (evt) => {
+  const { lat, lng } = evt.target.getLatLng();
+  addressElement.value = `${lat}, ${lng}`;
+});
+
+// Проверка цены за ночь
+pristine.addValidator(priceHouseElement, (value) => (value >= getMinCost()), getCostErrorMessage);
+
+const onImputTypeHouse = () => {
+  priceHouseElement.placeholder = getMinCost();
+  sliderElement.noUiSlider.updateOptions({
     padding: [getMinCost(), 0]
   });
-  if (priceHouse.value) {
-    pristine.validate(priceHouse);
+  if (priceHouseElement.value) {
+    pristine.validate(priceHouseElement);
   }
-});
+};
 
-priceHouse.addEventListener('input', () => {
-  slider.noUiSlider.set(priceHouse.value);
-});
+typeHouseElement.addEventListener('input', onImputTypeHouse);
 
-slider.noUiSlider.on('slide', () => {
-  priceHouse.value = slider.noUiSlider.get();
-  pristine.validate(priceHouse);
-});
-
-// Синхронизация количества комнат и мест
-
-const roomCount = document.querySelector('#room_number');
-const capacity = document.querySelector('#capacity');
-const capacityOptionList = capacity.children;
 
 // Подходит ли опция по количеству мест, выбранному количеству комнат
-const isCorrectCapacity = (capacityValue) => CAPACITY_OPTIONS[roomCount.value].some((value) => (+capacityValue === +value));
+const isCorrectCapacity = (capacityValue) => CAPACITY_OPTIONS[roomCountElement.value].some((value) => (+capacityValue === +value));
 
 // Запретить выбор неподходящего числа мест
-const selectCapacityOption = () => {
-  for (let i = 0; i < capacityOptionList.length; i++) {
-    const capacityOption = capacityOptionList[i];
-    if (isCorrectCapacity(capacityOption.value)) {
-      capacityOption.removeAttribute('disabled');
+const onSelectCapacityOption = () => {
+  for (const element of capacityOptionElements) {
+    if (isCorrectCapacity(element.value)) {
+      element.removeAttribute('disabled');
     } else {
-      capacityOption.setAttribute('disabled', '');
+      element.setAttribute('disabled', '');
     }
   }
 };
 
-selectCapacityOption();
+onSelectCapacityOption();
 
-pristine.addValidator(capacity, (value) => isCorrectCapacity(value), 'Это не подходит');
+// Валидация количества комнат и мест
+pristine.addValidator(capacityElement, (value) => isCorrectCapacity(value), 'Это не подходит');
 
-roomCount.addEventListener('input', () => {
-  selectCapacityOption();
-  pristine.validate(capacity);
+roomCountElement.addEventListener('input', () => {
+  onSelectCapacityOption();
+  pristine.validate(capacityElement);
 });
 
-
 // Синхронизация времени въезда и выезда
+timeinElement.addEventListener('input', () => (timeoutElement.value = timeinElement.value));
+timeoutElement.addEventListener('input', () => (timeinElement.value = timeoutElement.value));
 
-const timein = document.querySelector('#timein');
-const timeout = document.querySelector('#timeout');
 
-timein.addEventListener('input', () => (timeout.value = timein.value));
-timeout.addEventListener('input', () => (timein.value = timeout.value));
+/** Добавляет действие к событию для случая успешной валидации */
+const addEventSubmitToForm = (onSuccess) => {
+  formElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    if (pristine.validate()) {
+      onSuccess(evt);
+    }
+  });
+};
+
+// Получение данных формы
+const getFormData = () => new FormData(formElement);
+
+// Возрат формы в исходное состояние
+const onResetForm = () => {
+  formElement.reset();
+  onImputTypeHouse();
+  onSelectCapacityOption();
+  pristine.reset();
+};
+resetElement.addEventListener('click', onResetForm);
+
+export { addEventSubmitToForm, getFormData, onResetForm };

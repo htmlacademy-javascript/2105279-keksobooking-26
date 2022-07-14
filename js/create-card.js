@@ -1,6 +1,3 @@
-
-import { createAdverts } from './data.js';
-
 const OFFER_TYPE = {
   flat: 'Квартира',
   bungalow: 'Бунгало',
@@ -9,15 +6,13 @@ const OFFER_TYPE = {
   hotel: 'Отель'
 };
 
-const similarAdverts = createAdverts(10);
 const cardAdvertTemplate = document.querySelector('#card').content.querySelector('.popup');
-const similarCards = [];
 
-// Заполнение элементов данными на основе шаблона
-similarAdverts.forEach(({ author, offer }) => {
+// Создание элемента с данными на основе шаблона
+const createCard = ({ author, offer }) => {
   const cardElement = cardAdvertTemplate.cloneNode(true);
 
-  // Функция для замены содержимого данными, либо скрытие элемента, если данных для него нет
+  // Функция для замены содержимого данными, либо сокрытие элемента, если данных для него нет
   const replaceTextContent = (selector, content, check = true) => {
     const element = cardElement.querySelector(selector);
     if (content && check) {
@@ -41,25 +36,30 @@ similarAdverts.forEach(({ author, offer }) => {
 
   // Удаление элементов списка не соответствюэших данным с списке 'особенностей'
   const featureElements = cardElement.querySelectorAll('.popup__feature');
-  for (let i = 0; i < featureElements.length; i++) {
-    if (!offer.features.some((feature) => featureElements[i].classList.contains(`popup__feature--${feature}`))) {
-      featureElements[i].remove();
-    }
+
+  if (offer.features === undefined) {
+    featureElements[0].parentElement.remove();
+  } else {
+    featureElements.forEach((element) => {
+      if (!offer.features.some((feature) => element.classList.contains(`popup__feature--${feature}`))) {
+        element.remove();
+      }
+    });
   }
 
   // Добавление списка изображений по шаблону
   const photoTemplate = cardElement.querySelector('.popup__photo').cloneNode(true);
   const photosElement = cardElement.querySelector('.popup__photos');
   photosElement.innerHTML = '';
-  offer.photos.forEach((photo) => {
-    const photoElement = photoTemplate.cloneNode(true);
-    photoElement.src = photo;
-    photosElement.append(photoElement);
-  });
-
+  if (offer.photos !== undefined) {
+    offer.photos.forEach((photo) => {
+      const photoElement = photoTemplate.cloneNode(true);
+      photoElement.src = photo;
+      photosElement.append(photoElement);
+    });
+  }
   cardElement.querySelector('.popup__avatar').src = author.avatar;
+  return cardElement;
+};
 
-  similarCards.push(cardElement);
-});
-
-export { similarAdverts, similarCards };
+export { createCard };
