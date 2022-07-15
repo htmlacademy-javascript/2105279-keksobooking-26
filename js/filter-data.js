@@ -30,7 +30,7 @@ const filterData = (data) => data
   .filter((adv) => isTypeHouse(adv) && isPriceHouse(adv) && isRoomCount(adv) && isGuestCount(adv) && isFeature(adv))
   .slice(0, 10);
 
-// Обработчик обнавляющий массив особенностей для последующей фильтрации
+// Обработчик обновляющий массив особенностей для использования при фильтрации
 const onUpdateCheckedFeatures = () => {
   checkedFeatures = Array.from(featureElements.filter((element) => element.checked), (element) => element.value);
 };

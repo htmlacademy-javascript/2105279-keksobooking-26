@@ -7,7 +7,7 @@ import { getData, sendData } from './net-api.js';
 import { showSuccessMessage, createErrorDialog } from './messages.js';
 import { debounce } from './debounce.js';
 
-let dataAdvs;
+let dataAdvs = [];
 
 // Обработчик обновления маркеров
 const onMarkerUpdate = () => {
