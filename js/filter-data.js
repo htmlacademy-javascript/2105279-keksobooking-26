@@ -1,3 +1,5 @@
+const MAX_VIEW_ADV = 10;
+
 const PRICE_LIMIT = {
   any: [0, 100000],
   low: [0, 10000],
@@ -21,16 +23,29 @@ const isRoomCount = (adv) => (roomCountElement.value === 'any' || adv.offer.room
 const isGuestCount = (adv) => (guestCountElement.value === 'any' || adv.offer.guests === +guestCountElement.value);
 const isFeature = (adv) => {
   if (adv.offer.features !== undefined) {
-    return checkedFeatures.every((type) => adv.offer.features.some((feature) => type === feature));
+    return checkedFeatures.every((element) => adv.offer.features.some((feature) => element.value === feature));
   }
   return checkedFeatures.length === 0;
 };
 
-const filterData = (data) => {
-  checkedFeatures = Array.from(featureElements.filter((element) => element.checked), (element) => element.value);
-  return data
-    .filter((adv) => isTypeHouse(adv) && isPriceHouse(adv) && isRoomCount(adv) && isGuestCount(adv) && isFeature(adv))
-    .slice(0, 10);
+const filterData = (advs) => {
+  checkedFeatures = featureElements.filter((element) => element.checked);
+  const result = [];
+  for (const adv of advs) {
+    if (
+      isTypeHouse(adv) &&
+      isPriceHouse(adv) &&
+      isRoomCount(adv) &&
+      isGuestCount(adv) &&
+      isFeature(adv)
+    ) {
+      result.push(adv);
+      if (result.length === MAX_VIEW_ADV) {
+        return result;
+      }
+    }
+  }
+  return result;
 };
 
 /** Добавляет действие к событию для случая изменения фильтра */
