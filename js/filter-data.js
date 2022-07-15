@@ -26,15 +26,12 @@ const isFeature = (adv) => {
   return checkedFeatures.length === 0;
 };
 
-const filterData = (data) => data
-  .filter((adv) => isTypeHouse(adv) && isPriceHouse(adv) && isRoomCount(adv) && isGuestCount(adv) && isFeature(adv))
-  .slice(0, 10);
-
-// Обработчик обновляющий массив особенностей для использования при фильтрации
-const onUpdateCheckedFeatures = () => {
+const filterData = (data) => {
   checkedFeatures = Array.from(featureElements.filter((element) => element.checked), (element) => element.value);
+  return data
+    .filter((adv) => isTypeHouse(adv) && isPriceHouse(adv) && isRoomCount(adv) && isGuestCount(adv) && isFeature(adv))
+    .slice(0, 10);
 };
-formFilterElement.addEventListener('change', onUpdateCheckedFeatures);
 
 /** Добавляет действие к событию для случая изменения фильтра */
 const addEventUpdateFilter = (onUpdate) => formFilterElement.addEventListener('change', onUpdate);
