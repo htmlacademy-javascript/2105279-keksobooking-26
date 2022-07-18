@@ -137,6 +137,7 @@ newMarker.addTo(map);
 newMarker.on('moveend', (evt) => {
   const { lat, lng } = evt.target.getLatLng();
   addressElement.value = `${lat}, ${lng}`;
+  pristine.validate(addressElement);
 });
 
 /** Возрат маркера в центральное положение */
@@ -206,6 +207,8 @@ const onResetForm = () => {
   onSelectCapacityOption();
   pristine.reset();
   resetNewMarker();
+  photoPreviewElement.innerHTML = '';
+  avatarPreviewElement.src = 'img/muffin-grey.svg';
 };
 resetElement.addEventListener('click', onResetForm);
 
