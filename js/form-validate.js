@@ -1,5 +1,7 @@
 import { map, getAddressBegin } from './map-init.js';
 
+const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
+
 const MIN_COST = {
   'bungalow': 0,
   'flat': 1000,
@@ -38,6 +40,37 @@ const timeinElement = document.querySelector('#timein');
 const timeoutElement = document.querySelector('#timeout');
 const addressElement = document.querySelector('#address');
 const capacityOptionElements = capacityElement.children;
+
+const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
+const avatarChooserElement = document.querySelector('.ad-form__field [type="file"]');
+const photoPreviewElement = document.querySelector('.ad-form__photo');
+const photoChooserElement = document.querySelector('.ad-form__upload [type="file"]');
+
+
+// Загрузка и отобрадание изображений
+
+const isImageFile = (file) => {
+  const fileName = file.name.toLowerCase();
+  return FILE_TYPES.some((it) => fileName.endsWith(it));
+};
+
+avatarChooserElement.addEventListener('change', () => {
+  const file = avatarChooserElement.files[0];
+  if (isImageFile(file)) {
+    avatarPreviewElement.src = URL.createObjectURL(file);
+  }
+});
+
+photoChooserElement.addEventListener('change', () => {
+  const file = photoChooserElement.files[0];
+  if (isImageFile(file)) {
+    const newPhoto = document.createElement('img');
+    newPhoto.src = URL.createObjectURL(file);
+    newPhoto.width = 300;
+    photoPreviewElement.innerHTML = '';
+    photoPreviewElement.append(newPhoto);
+  }
+});
 
 // Инициализация валидации с помощью библиатеки Pristine
 const pristine = new Pristine(formElement, {
