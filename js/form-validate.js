@@ -2,6 +2,8 @@ import { map, getAddressBegin } from './map-init.js';
 
 const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
 
+const DEFAULT_AVATAR = 'img/muffin-grey.svg';
+
 const MIN_COST = {
   'bungalow': 0,
   'flat': 1000,
@@ -47,8 +49,9 @@ const photoPreviewElement = document.querySelector('.ad-form__photo');
 const photoChooserElement = document.querySelector('.ad-form__upload [type="file"]');
 
 
-// Загрузка и отобрадание изображений
+// Загрузка и отображение изображений
 
+/** Являеться ли файл допустимого типа*/
 const isImageFile = (file) => {
   const fileName = file.name.toLowerCase();
   return FILE_TYPES.some((it) => fileName.endsWith(it));
@@ -78,8 +81,6 @@ const pristine = new Pristine(formElement, {
   errorTextParent: 'ad-form__element--validate',
   errorTextClass: 'ad-form__error'
 });
-
-// Вспомогательные функции
 
 /** Минимальная цена за ночь */
 const getMinCost = () => MIN_COST[typeHouseElement.value];
@@ -208,7 +209,7 @@ const onResetForm = () => {
   pristine.reset();
   resetNewMarker();
   photoPreviewElement.innerHTML = '';
-  avatarPreviewElement.src = 'img/muffin-grey.svg';
+  avatarPreviewElement.src = DEFAULT_AVATAR;
 };
 resetElement.addEventListener('click', onResetForm);
 

@@ -15,12 +15,12 @@ const createErrorDialog = (selector, onSubmit, onRreject) => {
   buttonElement.addEventListener('click', () => {
     messageElement.remove();
     onSubmit();
-  });
+  }, { once: true });
 
   buttonRejectElement.addEventListener('click', () => {
     messageElement.remove();
     onRreject();
-  });
+  }, { once: true });
 };
 
 export { showSuccessMessage, createErrorDialog };

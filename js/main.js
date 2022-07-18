@@ -19,22 +19,27 @@ addEventUpdateFilter(debounce(onMarkerUpdate));
 // Добавляем обработчик отправки формы
 const onSendData = () => {
   disableSubmitButton();
-  sendData(() => {
-    showSuccessMessage();
-    enableSubmitButton();
-    onResetForm();
-  }, () => createErrorDialog('#error', onSendData, enableSubmitButton), getFormData());
+  sendData(
+    () => {
+      showSuccessMessage();
+      enableSubmitButton();
+      onResetForm();
+    },
+    () => createErrorDialog('#error', onSendData, enableSubmitButton),
+    getFormData());
 };
 addEventSubmitToForm(onSendData);
 
 // Получаем данные с сервера и добавляем на карту
 const onGetData = () => {
   enableForm();
-  getData((data) => {
-    dataAdvs = data;
-    onMarkerUpdate();
-    enableFilter();
-  }, () => createErrorDialog('#error_load', onGetData, disableAFilter));
+  getData(
+    (data) => {
+      dataAdvs = data;
+      onMarkerUpdate();
+      enableFilter();
+    },
+    () => createErrorDialog('#error_load', onGetData, disableAFilter));
 };
 
 // Инициализация карты
