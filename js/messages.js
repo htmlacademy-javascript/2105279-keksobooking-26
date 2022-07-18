@@ -1,26 +1,29 @@
-const successTemplateElement = document.querySelector('#success').content.firstElementChild;
-
-const showSuccessMessage = () => {
-  const messageElement = successTemplateElement.cloneNode(true);
-  document.body.prepend(messageElement);
-  setTimeout(() => messageElement.remove(), 5000);
-};
-
-const createErrorDialog = (selector, onSubmit, onRreject) => {
+const createMessage = (selector, onSubmit = () => { }, onRreject = () => { }) => {
   const messageElement = document.querySelector(selector).content.firstElementChild.cloneNode(true);
   const buttonElement = messageElement.querySelector('.error__button');
-  const buttonRejectElement = messageElement.querySelector('.error__reject');
   document.body.prepend(messageElement);
 
-  buttonElement.addEventListener('click', () => {
-    messageElement.remove();
-    onSubmit();
-  }, { once: true });
+  const onCloseMessage = (evt) => {
+    if (evt.type === 'click' || evt.key === 'Escape') {
+      window.removeEventListener('click', onCloseMessage);
+      window.removeEventListener('keydown', onCloseMessage);
+      if (buttonElement) {
+        window.removeEventListener('click', onCloseMessage);
+      }
+      if (evt.target === buttonElement) {
+        onSubmit();
+      } else {
+        onRreject();
+      }
+      messageElement.remove();
+    }
+  };
 
-  buttonRejectElement.addEventListener('click', () => {
-    messageElement.remove();
-    onRreject();
-  }, { once: true });
+  if (buttonElement) {
+    buttonElement.addEventListener('click', onCloseMessage);
+  }
+  window.addEventListener('click', onCloseMessage);
+  window.addEventListener('keydown', onCloseMessage);
 };
 
-export { showSuccessMessage, createErrorDialog };
+export { createMessage };

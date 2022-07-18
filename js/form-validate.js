@@ -32,7 +32,6 @@ const MAX_COST = 100000;
 // Получение элементов формы
 
 const formElement = document.querySelector('.ad-form');
-const resetElement = document.querySelector('.ad-form__reset');
 const typeHouseElement = document.querySelector('#type');
 const priceHouseElement = document.querySelector('#price');
 const sliderElement = document.querySelector('.ad-form__slider');
@@ -202,7 +201,7 @@ const addEventSubmitToForm = (onSuccess) => {
 const getFormData = () => new FormData(formElement);
 
 // Возрат формы и маркера в исходное состояние
-const onResetForm = () => {
+const resetForm = () => {
   formElement.reset();
   onImputTypeHouse();
   onSelectCapacityOption();
@@ -211,6 +210,5 @@ const onResetForm = () => {
   photoPreviewElement.innerHTML = '';
   avatarPreviewElement.src = DEFAULT_AVATAR;
 };
-resetElement.addEventListener('click', onResetForm);
 
-export { addEventSubmitToForm, getFormData, onResetForm };
+export { addEventSubmitToForm, getFormData, resetForm };

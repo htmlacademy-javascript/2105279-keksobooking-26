@@ -1,11 +1,13 @@
 import { enableSubmitButton, disableSubmitButton, enableFilter, disableAFilter, enableForm } from './switching-activity.js';
 import { map, getAddressBegin } from './map-init.js';
 import { addMarker, clearGroupMarkers } from './map-marker.js';
-import { addEventSubmitToForm, getFormData, onResetForm } from './form-validate.js';
-import { filterData, addEventUpdateFilter } from './filter-data.js';
+import { addEventSubmitToForm, getFormData, resetForm } from './form-validate.js';
+import { filterData, addEventUpdateFilter, resetFilter } from './filter-data.js';
 import { getData, sendData } from './net-api.js';
-import { showSuccessMessage, createErrorDialog } from './messages.js';
+import { createMessage } from './messages.js';
 import { debounce } from './debounce.js';
+
+const resetElement = document.querySelector('.ad-form__reset');
 
 let dataAdvs = [];
 
@@ -16,16 +18,24 @@ const onMarkerUpdate = () => {
 };
 addEventUpdateFilter(debounce(onMarkerUpdate));
 
+// Перевод страницы в начальное состояние
+const onrResetPage = () => {
+  resetForm();
+  resetFilter();
+  onMarkerUpdate();
+};
+resetElement.addEventListener('click', onrResetPage);
+
 // Добавляем обработчик отправки формы
 const onSendData = () => {
   disableSubmitButton();
   sendData(
     () => {
-      showSuccessMessage();
+      createMessage('#success');
       enableSubmitButton();
-      onResetForm();
+      onrResetPage();
     },
-    () => createErrorDialog('#error', onSendData, enableSubmitButton),
+    () => createMessage('#error', onSendData, enableSubmitButton),
     getFormData());
 };
 addEventSubmitToForm(onSendData);
@@ -39,7 +49,7 @@ const onGetData = () => {
       onMarkerUpdate();
       enableFilter();
     },
-    () => createErrorDialog('#error_load', onGetData, disableAFilter));
+    () => createMessage('#error_load', onGetData, disableAFilter));
 };
 
 // Инициализация карты

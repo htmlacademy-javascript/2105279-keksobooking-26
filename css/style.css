@@ -1009,24 +1009,16 @@ fieldset {
   border-radius: 8px;
 }
 
-.error__reject {
-  margin-left: 100px;
-}
-
 .error__button:hover,
-.error__button:focus,
-.error__reject:hover,
-.error__reject:focus {
+.error__button:focus {
   opacity: 0.8;
 }
 
-.error__button:focus,
-.error__reject:focus {
+.error__button:focus {
   outline: none;
 }
 
-.error__button:active,
-.error__reject:active {
+.error__button:active {
   outline: none;
   opacity: 0.6;
 }
