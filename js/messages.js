@@ -11,6 +11,7 @@ const createErrorDialog = (selector, onSubmit, onRreject) => {
   const buttonElement = messageElement.querySelector('.error__button');
   const buttonRejectElement = messageElement.querySelector('.error__reject');
   document.body.prepend(messageElement);
+
   buttonElement.addEventListener('click', () => {
     messageElement.remove();
     onSubmit();

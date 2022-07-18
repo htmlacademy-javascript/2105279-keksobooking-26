@@ -1,4 +1,4 @@
-import { newMarker } from './map-init.js';
+import { map, getAddressBegin } from './map-init.js';
 
 const MIN_COST = {
   'bungalow': 0,
@@ -84,11 +84,30 @@ priceHouseElement.addEventListener('input', () => {
   sliderElement.noUiSlider.set(priceHouseElement.value);
 });
 
-// Привязка поля адрес к маркеру на карте
+// Создание маркера и привязка его к полю адрес
+
+const newIcon = L.icon({
+  iconUrl: './img/main-pin.svg',
+  iconSize: [52, 52],
+  iconAnchor: [26, 52],
+});
+
+const newMarker = L.marker(
+  getAddressBegin(),
+  {
+    draggable: true,
+    icon: newIcon,
+  },
+);
+
+newMarker.addTo(map);
 newMarker.on('moveend', (evt) => {
   const { lat, lng } = evt.target.getLatLng();
   addressElement.value = `${lat}, ${lng}`;
 });
+
+/** Возрат маркера в центральное положение */
+const resetNewMarker = () => newMarker.setLatLng(getAddressBegin());
 
 // Проверка цены за ночь
 pristine.addValidator(priceHouseElement, (value) => (value >= getMinCost()), getCostErrorMessage);
@@ -134,7 +153,6 @@ roomCountElement.addEventListener('input', () => {
 timeinElement.addEventListener('input', () => (timeoutElement.value = timeinElement.value));
 timeoutElement.addEventListener('input', () => (timeinElement.value = timeoutElement.value));
 
-
 /** Добавляет действие к событию для случая успешной валидации */
 const addEventSubmitToForm = (onSuccess) => {
   formElement.addEventListener('submit', (evt) => {
@@ -148,12 +166,13 @@ const addEventSubmitToForm = (onSuccess) => {
 // Получение данных формы
 const getFormData = () => new FormData(formElement);
 
-// Возрат формы в исходное состояние
+// Возрат формы и маркера в исходное состояние
 const onResetForm = () => {
   formElement.reset();
   onImputTypeHouse();
   onSelectCapacityOption();
   pristine.reset();
+  resetNewMarker();
 };
 resetElement.addEventListener('click', onResetForm);
 
