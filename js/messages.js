@@ -8,7 +8,7 @@ const createMessage = (selector, onSubmit = () => { }, onRreject = () => { }) =>
       window.removeEventListener('click', onCloseMessage);
       window.removeEventListener('keydown', onCloseMessage);
       if (buttonElement) {
-        window.removeEventListener('click', onCloseMessage);
+        buttonElement.removeEventListener('click', onCloseMessage);
       }
       if (evt.target === buttonElement) {
         onSubmit();
