@@ -1,4 +1,4 @@
-import { enableSubmitButton, disableSubmitButton, enableFilter, disableAFilter, enableForm } from './switching-activity.js';
+import { enableSubmitButton, disableSubmitButton, enableFilter, disableFilter, enableForm } from './switching-activity.js';
 import { map, getAddressBegin } from './map-init.js';
 import { addMarker, clearGroupMarkers } from './map-marker.js';
 import { addEventSubmitToForm, getFormData, resetForm } from './form-validate.js';
@@ -49,7 +49,7 @@ const onGetData = () => {
       onMarkerUpdate();
       enableFilter();
     },
-    () => createMessage('#error_load', onGetData, disableAFilter));
+    () => createMessage('#error_load', onGetData, disableFilter));
 };
 
 // Инициализация карты

@@ -20,7 +20,7 @@ const disableForm = () => {
 /**
  * Переводит страницу в неактивное состояние
  */
-const disableAFilter = () => {
+const disableFilter = () => {
   mapFiltersElement.classList.add('ad-form--disabled');
   mapFiltersElements.forEach((element) => element.setAttribute('disabled', ''));
 };
@@ -44,6 +44,6 @@ const enableFilter = () => {
 
 // По умолчанию страница в неактивном состоянии
 disableForm();
-disableAFilter();
+disableFilter();
 
-export { disableAFilter, enableForm, enableFilter, enableSubmitButton, disableSubmitButton };
+export { disableFilter, enableForm, enableFilter, enableSubmitButton, disableSubmitButton };
