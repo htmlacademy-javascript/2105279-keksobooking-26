@@ -10,7 +10,7 @@ const createMessage = (selector, onSubmit = () => { }, onRreject = () => { }) =>
       if (buttonElement) {
         buttonElement.removeEventListener('click', onCloseMessage);
       }
-      if (evt.target === buttonElement) {
+      if (evt.target === buttonElement && evt.type === 'click') {
         onSubmit();
       } else {
         onRreject();
@@ -21,6 +21,7 @@ const createMessage = (selector, onSubmit = () => { }, onRreject = () => { }) =>
 
   if (buttonElement) {
     buttonElement.addEventListener('click', onCloseMessage);
+    buttonElement.focus();
   }
   window.addEventListener('click', onCloseMessage);
   window.addEventListener('keydown', onCloseMessage);
