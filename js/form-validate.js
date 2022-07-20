@@ -1,5 +1,9 @@
 import { map, getAddressBegin } from './map-init.js';
 
+const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
+
+const DEFAULT_AVATAR = 'img/muffin-grey.svg';
+
 const MIN_COST = {
   'bungalow': 0,
   'flat': 1000,
@@ -28,7 +32,6 @@ const MAX_COST = 100000;
 // Получение элементов формы
 
 const formElement = document.querySelector('.ad-form');
-const resetElement = document.querySelector('.ad-form__reset');
 const typeHouseElement = document.querySelector('#type');
 const priceHouseElement = document.querySelector('#price');
 const sliderElement = document.querySelector('.ad-form__slider');
@@ -39,14 +42,44 @@ const timeoutElement = document.querySelector('#timeout');
 const addressElement = document.querySelector('#address');
 const capacityOptionElements = capacityElement.children;
 
+const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
+const avatarChooserElement = document.querySelector('.ad-form__field [type="file"]');
+const photoPreviewElement = document.querySelector('.ad-form__photo');
+const photoChooserElement = document.querySelector('.ad-form__upload [type="file"]');
+
+
+// Загрузка и отображение изображений
+
+/** Являеться ли файл допустимого типа*/
+const isImageFile = (file) => {
+  const fileName = file.name.toLowerCase();
+  return FILE_TYPES.some((it) => fileName.endsWith(it));
+};
+
+avatarChooserElement.addEventListener('change', () => {
+  const file = avatarChooserElement.files[0];
+  if (isImageFile(file)) {
+    avatarPreviewElement.src = URL.createObjectURL(file);
+  }
+});
+
+photoChooserElement.addEventListener('change', () => {
+  const file = photoChooserElement.files[0];
+  if (isImageFile(file)) {
+    const newPhoto = document.createElement('img');
+    newPhoto.src = URL.createObjectURL(file);
+    newPhoto.width = 300;
+    photoPreviewElement.innerHTML = '';
+    photoPreviewElement.append(newPhoto);
+  }
+});
+
 // Инициализация валидации с помощью библиатеки Pristine
 const pristine = new Pristine(formElement, {
   classTo: 'ad-form__element--validate',
   errorTextParent: 'ad-form__element--validate',
   errorTextClass: 'ad-form__error'
 });
-
-// Вспомогательные функции
 
 /** Минимальная цена за ночь */
 const getMinCost = () => MIN_COST[typeHouseElement.value];
@@ -104,6 +137,7 @@ newMarker.addTo(map);
 newMarker.on('moveend', (evt) => {
   const { lat, lng } = evt.target.getLatLng();
   addressElement.value = `${lat}, ${lng}`;
+  pristine.validate(addressElement);
 });
 
 /** Возрат маркера в центральное положение */
@@ -167,13 +201,14 @@ const addEventSubmitToForm = (onSuccess) => {
 const getFormData = () => new FormData(formElement);
 
 // Возрат формы и маркера в исходное состояние
-const onResetForm = () => {
+const resetForm = () => {
   formElement.reset();
   onImputTypeHouse();
   onSelectCapacityOption();
   pristine.reset();
   resetNewMarker();
+  photoPreviewElement.innerHTML = '';
+  avatarPreviewElement.src = DEFAULT_AVATAR;
 };
-resetElement.addEventListener('click', onResetForm);
 
-export { addEventSubmitToForm, getFormData, onResetForm };
+export { addEventSubmitToForm, getFormData, resetForm };

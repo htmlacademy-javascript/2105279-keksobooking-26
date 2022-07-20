@@ -48,7 +48,17 @@ const filterData = (advs) => {
   return result;
 };
 
+const resetFilter = () => {
+  typeHouseElement.value = 'any';
+  priceHouseElement.value = 'any';
+  roomCountElement.value = 'any';
+  guestCountElement.value = 'any';
+  featureElements.forEach((element) => {
+    element.checked = false;
+  });
+};
+
 /** Добавляет действие к событию для случая изменения фильтра */
 const addEventUpdateFilter = (onUpdate) => formFilterElement.addEventListener('change', onUpdate);
 
-export { addEventUpdateFilter, filterData };
+export { addEventUpdateFilter, filterData, resetFilter };
