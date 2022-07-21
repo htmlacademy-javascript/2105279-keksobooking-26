@@ -1,8 +1,10 @@
 import { map } from './map-init.js';
 import { createCard } from './create-card.js';
 
+const PIN_URL = './img/pin.svg';
+
 const icon = L.icon({
-  iconUrl: './img/pin.svg',
+  iconUrl: PIN_URL,
   iconSize: [40, 40],
   iconAnchor: [20, 40],
 });

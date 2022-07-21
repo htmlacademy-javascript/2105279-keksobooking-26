@@ -10,6 +10,7 @@ const cardAdvertTemplate = document.querySelector('#card').content.querySelector
 
 // Создание элемента с данными на основе шаблона
 const createCard = ({ author, offer }) => {
+  const { title, address, price, type, rooms, guests, checkin, checkout, description, features, photos } = offer;
   const cardElement = cardAdvertTemplate.cloneNode(true);
 
   // Функция для замены содержимого данными, либо сокрытие элемента, если данных для него нет
@@ -23,36 +24,36 @@ const createCard = ({ author, offer }) => {
     }
   };
 
-  replaceTextContent('.popup__title', offer.title);
-  replaceTextContent('.popup__text--address', offer.address);
-  replaceTextContent('.popup__text--price span', offer.price);
-  if (!offer.price) {
-    replaceTextContent('.popup__text--price', offer.price);
+  replaceTextContent('.popup__title', title);
+  replaceTextContent('.popup__text--address', address);
+  replaceTextContent('.popup__text--price span', price);
+  if (!price) {
+    replaceTextContent('.popup__text--price', price);
   }
-  replaceTextContent('.popup__type', OFFER_TYPE[offer.type]);
-  replaceTextContent('.popup__text--capacity', `${offer.rooms} комнаты для ${offer.guests} гостей`, !!offer.rooms && !!offer.guests);
-  replaceTextContent('.popup__text--time', `Заезд после ${offer.checkin}, выезд до ${offer.checkout}`, !!offer.checkin && !!offer.checkout);
-  replaceTextContent('.popup__description', offer.description);
+  replaceTextContent('.popup__type', OFFER_TYPE[type]);
+  replaceTextContent('.popup__text--capacity', `${rooms} комнаты для ${guests} гостей`, !!rooms && !!guests);
+  replaceTextContent('.popup__text--time', `Заезд после ${checkin}, выезд до ${checkout}`, !!checkin && !!checkout);
+  replaceTextContent('.popup__description', description);
 
   // Удаление элементов списка не соответствюэших данным с списке 'особенностей'
   const featureElements = cardElement.querySelectorAll('.popup__feature');
 
-  if (offer.features === undefined) {
-    featureElements[0].parentElement.remove();
-  } else {
+  if (features) {
     featureElements.forEach((element) => {
-      if (!offer.features.some((feature) => element.classList.contains(`popup__feature--${feature}`))) {
+      if (!features.some((feature) => element.classList.contains(`popup__feature--${feature}`))) {
         element.remove();
       }
     });
+  } else {
+    featureElements[0].parentElement.remove();
   }
 
   // Добавление списка изображений по шаблону
   const photoTemplate = cardElement.querySelector('.popup__photo').cloneNode(true);
   const photosElement = cardElement.querySelector('.popup__photos');
   photosElement.innerHTML = '';
-  if (offer.photos !== undefined) {
-    offer.photos.forEach((photo) => {
+  if (photos) {
+    photos.forEach((photo) => {
       const photoElement = photoTemplate.cloneNode(true);
       photoElement.src = photo;
       photosElement.append(photoElement);
