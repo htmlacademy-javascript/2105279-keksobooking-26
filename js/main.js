@@ -19,12 +19,12 @@ const onMarkerUpdate = () => {
 addEventUpdateFilter(debounce(onMarkerUpdate));
 
 // Перевод страницы в начальное состояние
-const onrResetPage = () => {
+const onResetPage = () => {
   resetForm();
   resetFilter();
   onMarkerUpdate();
 };
-resetElement.addEventListener('click', onrResetPage);
+resetElement.addEventListener('click', onResetPage);
 
 // Добавляем обработчик отправки формы
 const onSendData = () => {
@@ -33,7 +33,7 @@ const onSendData = () => {
     () => {
       createMessage('#success');
       enableSubmitButton();
-      onrResetPage();
+      onResetPage();
     },
     () => createMessage('#error', onSendData, enableSubmitButton),
     getFormData());
@@ -54,5 +54,5 @@ const onGetData = () => {
 
 // Инициализация карты
 map
-  .on('viewreset', onGetData)
+  .on('load', onGetData)
   .setView(getAddressBegin(), 13);

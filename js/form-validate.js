@@ -1,8 +1,8 @@
 import { map, getAddressBegin } from './map-init.js';
 
 const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
-
 const DEFAULT_AVATAR = 'img/muffin-grey.svg';
+const MAIN_PIN_URL = 'img/main-pin.svg';
 
 const MIN_COST = {
   'bungalow': 0,
@@ -120,7 +120,7 @@ priceHouseElement.addEventListener('input', () => {
 // Создание маркера и привязка его к полю адрес
 
 const newIcon = L.icon({
-  iconUrl: './img/main-pin.svg',
+  iconUrl: MAIN_PIN_URL,
   iconSize: [52, 52],
   iconAnchor: [26, 52],
 });
@@ -134,6 +134,7 @@ const newMarker = L.marker(
 );
 
 newMarker.addTo(map);
+
 newMarker.on('moveend', (evt) => {
   const { lat, lng } = evt.target.getLatLng();
   addressElement.value = `${lat}, ${lng}`;
@@ -146,7 +147,7 @@ const resetNewMarker = () => newMarker.setLatLng(getAddressBegin());
 // Проверка цены за ночь
 pristine.addValidator(priceHouseElement, (value) => (value >= getMinCost()), getCostErrorMessage);
 
-const onImputTypeHouse = () => {
+const onInputTypeHouse = () => {
   priceHouseElement.placeholder = getMinCost();
   sliderElement.noUiSlider.updateOptions({
     padding: [getMinCost(), 0]
@@ -156,7 +157,7 @@ const onImputTypeHouse = () => {
   }
 };
 
-typeHouseElement.addEventListener('input', onImputTypeHouse);
+typeHouseElement.addEventListener('input', onInputTypeHouse);
 
 
 // Подходит ли опция по количеству мест, выбранному количеству комнат
@@ -203,7 +204,7 @@ const getFormData = () => new FormData(formElement);
 // Возрат формы и маркера в исходное состояние
 const resetForm = () => {
   formElement.reset();
-  onImputTypeHouse();
+  onInputTypeHouse();
   onSelectCapacityOption();
   pristine.reset();
   resetNewMarker();

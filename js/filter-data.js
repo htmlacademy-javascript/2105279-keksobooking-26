@@ -1,4 +1,8 @@
 const MAX_VIEW_ADV = 10;
+const TYPE_HOUSE_DEFAULT = 'any';
+const PRICE_HOUSE_DEFAULT = 'any';
+const ROOM_COUNT_DEFAULT = 'any';
+const GUEST_COUNT_DEFAULT = 'any';
 
 const PRICE_LIMIT = {
   any: [0, 100000],
@@ -16,17 +20,14 @@ const featureElements = [...document.querySelectorAll('#housing-features [type="
 let checkedFeatures = [];
 
 // Функции соответствия фильтрам
-const isTypeHouse = (adv) => (typeHouseElement.value === 'any' || adv.offer.type === typeHouseElement.value);
+const isTypeHouse = (adv) => (typeHouseElement.value === TYPE_HOUSE_DEFAULT || adv.offer.type === typeHouseElement.value);
 const isPriceLimit = (value) => (PRICE_LIMIT[priceHouseElement.value][0] <= value && PRICE_LIMIT[priceHouseElement.value][1] > value);
-const isPriceHouse = (adv) => adv.offer.price ? isPriceLimit(adv.offer.price) : priceHouseElement.value === 'any';
-const isRoomCount = (adv) => (roomCountElement.value === 'any' || adv.offer.rooms === +roomCountElement.value);
-const isGuestCount = (adv) => (guestCountElement.value === 'any' || adv.offer.guests === +guestCountElement.value);
-const isFeature = (adv) => {
-  if (adv.offer.features !== undefined) {
-    return checkedFeatures.every((element) => adv.offer.features.some((feature) => element.value === feature));
-  }
-  return checkedFeatures.length === 0;
-};
+const isPriceHouse = (adv) => adv.offer.price ? isPriceLimit(adv.offer.price) : priceHouseElement.value === PRICE_HOUSE_DEFAULT;
+const isRoomCount = (adv) => (roomCountElement.value === ROOM_COUNT_DEFAULT || adv.offer.rooms === +roomCountElement.value);
+const isGuestCount = (adv) => (guestCountElement.value === GUEST_COUNT_DEFAULT || adv.offer.guests === +guestCountElement.value);
+const isFeature = (adv) => adv.offer.features ?
+  checkedFeatures.every((element) => adv.offer.features.some((feature) => element.value === feature)) :
+  !checkedFeatures.length;
 
 const filterData = (advs) => {
   checkedFeatures = featureElements.filter((element) => element.checked);
@@ -49,10 +50,10 @@ const filterData = (advs) => {
 };
 
 const resetFilter = () => {
-  typeHouseElement.value = 'any';
-  priceHouseElement.value = 'any';
-  roomCountElement.value = 'any';
-  guestCountElement.value = 'any';
+  typeHouseElement.value = TYPE_HOUSE_DEFAULT;
+  priceHouseElement.value = PRICE_HOUSE_DEFAULT;
+  roomCountElement.value = ROOM_COUNT_DEFAULT;
+  guestCountElement.value = GUEST_COUNT_DEFAULT;
   featureElements.forEach((element) => {
     element.checked = false;
   });
