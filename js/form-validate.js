@@ -40,7 +40,6 @@ const capacityElement = document.querySelector('#capacity');
 const timeinElement = document.querySelector('#timein');
 const timeoutElement = document.querySelector('#timeout');
 const addressElement = document.querySelector('#address');
-const capacityOptionElements = capacityElement.children;
 
 const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
 const avatarChooserElement = document.querySelector('.ad-form__field [type="file"]');
@@ -90,11 +89,8 @@ const getCostErrorMessage = () => `${TRANSLATE_TYPE_HOUSE[typeHouseElement.value
 noUiSlider.create(sliderElement, {
   range: {
     min: 0,
-    '40%': 5000,
-    '60%': 10000,
     max: MAX_COST,
   },
-  padding: [getMinCost(), 0],
   start: getMinCost(),
   step: 1,
   connect: 'lower',
@@ -107,6 +103,13 @@ noUiSlider.create(sliderElement, {
     },
   },
 });
+
+// Сброс слайдера
+const resetSlider = () => {
+  sliderElement.noUiSlider.updateOptions({
+    start: getMinCost(),
+  });
+};
 
 sliderElement.noUiSlider.on('slide', () => {
   priceHouseElement.value = sliderElement.noUiSlider.get();
@@ -135,11 +138,12 @@ const newMarker = L.marker(
 
 newMarker.addTo(map);
 
-newMarker.on('moveend', (evt) => {
-  const { lat, lng } = evt.target.getLatLng();
-  addressElement.value = `${lat}, ${lng}`;
+const onMoveendMarker = () => {
+  const { lat, lng } = newMarker.getLatLng();
+  addressElement.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   pristine.validate(addressElement);
-});
+};
+newMarker.on('moveend', onMoveendMarker);
 
 /** Возрат маркера в центральное положение */
 const resetNewMarker = () => newMarker.setLatLng(getAddressBegin());
@@ -149,9 +153,6 @@ pristine.addValidator(priceHouseElement, (value) => (value >= getMinCost()), get
 
 const onInputTypeHouse = () => {
   priceHouseElement.placeholder = getMinCost();
-  sliderElement.noUiSlider.updateOptions({
-    padding: [getMinCost(), 0]
-  });
   if (priceHouseElement.value) {
     pristine.validate(priceHouseElement);
   }
@@ -161,28 +162,10 @@ typeHouseElement.addEventListener('input', onInputTypeHouse);
 
 
 // Подходит ли опция по количеству мест, выбранному количеству комнат
-const isCorrectCapacity = (capacityValue) => CAPACITY_OPTIONS[roomCountElement.value].some((value) => (+capacityValue === +value));
-
-// Запретить выбор неподходящего числа мест
-const onSelectCapacityOption = () => {
-  for (const element of capacityOptionElements) {
-    if (isCorrectCapacity(element.value)) {
-      element.removeAttribute('disabled');
-    } else {
-      element.setAttribute('disabled', '');
-    }
-  }
-};
-
-onSelectCapacityOption();
+const matchCorrectCapacity = (capacityValue) => CAPACITY_OPTIONS[roomCountElement.value].some((value) => (+capacityValue === +value));
 
 // Валидация количества комнат и мест
-pristine.addValidator(capacityElement, (value) => isCorrectCapacity(value), 'Это не подходит');
-
-roomCountElement.addEventListener('input', () => {
-  onSelectCapacityOption();
-  pristine.validate(capacityElement);
-});
+pristine.addValidator(capacityElement, (value) => matchCorrectCapacity(value), 'Это не подходит');
 
 // Синхронизация времени въезда и выезда
 timeinElement.addEventListener('input', () => (timeoutElement.value = timeinElement.value));
@@ -204,12 +187,14 @@ const getFormData = () => new FormData(formElement);
 // Возрат формы и маркера в исходное состояние
 const resetForm = () => {
   formElement.reset();
-  onInputTypeHouse();
-  onSelectCapacityOption();
   pristine.reset();
+  onInputTypeHouse();
   resetNewMarker();
+  onMoveendMarker();
+  resetSlider();
   photoPreviewElement.innerHTML = '';
   avatarPreviewElement.src = DEFAULT_AVATAR;
+  map.setView(getAddressBegin(), 13);
 };
 
 export { addEventSubmitToForm, getFormData, resetForm };

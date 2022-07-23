@@ -24,7 +24,10 @@ const onResetPage = () => {
   resetFilter();
   onMarkerUpdate();
 };
-resetElement.addEventListener('click', onResetPage);
+resetElement.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  onResetPage();
+});
 
 // Добавляем обработчик отправки формы
 const onSendData = () => {
@@ -35,7 +38,7 @@ const onSendData = () => {
       enableSubmitButton();
       onResetPage();
     },
-    () => createMessage('#error', onSendData, enableSubmitButton),
+    () => createMessage('#error', enableSubmitButton, enableSubmitButton),
     getFormData());
 };
 addEventSubmitToForm(onSendData);
@@ -48,6 +51,7 @@ const onGetData = () => {
       dataAdvs = data;
       onMarkerUpdate();
       enableFilter();
+      resetForm();
     },
     () => createMessage('#error_load', onGetData, disableFilter));
 };
