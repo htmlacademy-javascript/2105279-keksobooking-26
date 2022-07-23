@@ -8,21 +8,22 @@ const offerTypeToName = {
 
 const cardAdvertTemplate = document.querySelector('#card').content.querySelector('.popup');
 
+let cardElement;
+// Функция для замены содержимого данными, либо сокрытие элемента, если данных для него нет
+const replaceTextContent = (selector, content, check = true) => {
+  const element = cardElement.querySelector(selector);
+  if (content && check) {
+    element.textContent = content;
+  }
+  else {
+    element.setAttribute('hidden', true);
+  }
+};
+
 // Создание элемента с данными на основе шаблона
 const createCard = ({ author, offer }) => {
   const { title, address, price, type, rooms, guests, checkin, checkout, description, features, photos } = offer;
-  const cardElement = cardAdvertTemplate.cloneNode(true);
-
-  // Функция для замены содержимого данными, либо сокрытие элемента, если данных для него нет
-  const replaceTextContent = (selector, content, check = true) => {
-    const element = cardElement.querySelector(selector);
-    if (content && check) {
-      element.textContent = content;
-    }
-    else {
-      element.setAttribute('hidden', true);
-    }
-  };
+  cardElement = cardAdvertTemplate.cloneNode(true);
 
   replaceTextContent('.popup__title', title);
   replaceTextContent('.popup__text--address', address);
