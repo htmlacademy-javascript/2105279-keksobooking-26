@@ -1,10 +1,4 @@
-const offerTypeToName = {
-  bungalow: 'Бунгало',
-  flat: 'Квартира',
-  house: 'Дом',
-  palace: 'Дворец',
-  hotel: 'Отель'
-};
+import { offerTypeToName } from './offer-type.js';
 
 const cardAdvertTemplate = document.querySelector('#card').content.querySelector('.popup');
 

@@ -1,4 +1,5 @@
 import { map, getAddressBegin } from './map-init.js';
+import { offerTypeToName } from './offer-type.js';
 
 const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
 const DEFAULT_AVATAR = 'img/muffin-grey.svg';
@@ -11,14 +12,6 @@ const typeToMinPrice = {
   'hotel': 3000,
   'house': 5000,
   'palace': 10000
-};
-
-const offerTypeToName = {
-  'bungalow': 'Бунгало',
-  'flat': 'Квартира',
-  'hotel': 'Отель',
-  'house': 'Дом',
-  'palace': 'Дворец'
 };
 
 const roomToCapacitys = {
