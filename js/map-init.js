@@ -1,10 +1,10 @@
-const addressToBegin = {
+const axisToBeginValue = {
   lat: 35.67500,
   lng: 139.75000
 };
 
 // Начальные координаты
-const getAddressBegin = () => addressToBegin;
+const getAddressBegin = () => axisToBeginValue;
 
 const map = L.map('map-canvas');
 
