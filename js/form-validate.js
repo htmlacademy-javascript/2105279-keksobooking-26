@@ -3,6 +3,7 @@ import { map, getAddressBegin } from './map-init.js';
 const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
 const DEFAULT_AVATAR = 'img/muffin-grey.svg';
 const MAIN_PIN_URL = 'img/main-pin.svg';
+const PHOTO_PREVIEW_WIDTH = 300;
 
 const typeToMinPrice = {
   'bungalow': 0,
@@ -67,7 +68,7 @@ photoChooserElement.addEventListener('change', () => {
   if (isImageFile(file)) {
     const newPhoto = document.createElement('img');
     newPhoto.src = URL.createObjectURL(file);
-    newPhoto.width = 300;
+    newPhoto.width = PHOTO_PREVIEW_WIDTH;
     photoPreviewElement.innerHTML = '';
     photoPreviewElement.append(newPhoto);
   }
