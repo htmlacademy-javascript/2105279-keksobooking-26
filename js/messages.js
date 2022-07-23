@@ -3,28 +3,38 @@ const createMessage = (selector, onSubmit = () => { }, onRreject = () => { }) =>
   const buttonElement = messageElement.querySelector('.error__button');
   document.body.prepend(messageElement);
 
-  const onCloseMessage = (evt) => {
-    if (evt.type === 'click' || evt.key === 'Escape') {
-      window.removeEventListener('click', onCloseMessage);
-      window.removeEventListener('keydown', onCloseMessage);
-      if (buttonElement) {
-        buttonElement.removeEventListener('click', onCloseMessage);
-      }
-      if (evt.target === buttonElement && evt.type === 'click') {
-        onSubmit();
-      } else {
-        onRreject();
-      }
-      messageElement.remove();
+  const onClick = (evt) => {
+    closeMessage();
+    if (evt.target === buttonElement) {
+      onSubmit();
+    } else {
+      onRreject();
+    }
+  };
+
+  const onKeydown = (evt) => {
+    evt.preventDefault();
+    if (evt.key === 'Escape') {
+      closeMessage();
+      onRreject();
     }
   };
 
   if (buttonElement) {
-    buttonElement.addEventListener('click', onCloseMessage);
+    buttonElement.addEventListener('click', onClick);
     buttonElement.focus();
   }
-  window.addEventListener('click', onCloseMessage);
-  window.addEventListener('keydown', onCloseMessage);
+  window.addEventListener('click', onClick);
+  window.addEventListener('keydown', onKeydown);
+
+  function closeMessage() {
+    window.removeEventListener('click', onClick);
+    window.removeEventListener('keydown', onKeydown);
+    if (buttonElement) {
+      buttonElement.removeEventListener('click', onClick);
+    }
+    messageElement.remove();
+  }
 };
 
 export { createMessage };

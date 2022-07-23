@@ -1,10 +1,12 @@
 import { map, getAddressBegin } from './map-init.js';
+import { offerTypeToName } from './offer-type.js';
 
 const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
 const DEFAULT_AVATAR = 'img/muffin-grey.svg';
 const MAIN_PIN_URL = 'img/main-pin.svg';
+const PHOTO_PREVIEW_WIDTH = 300;
 
-const MIN_COST = {
+const typeToMinPrice = {
   'bungalow': 0,
   'flat': 1000,
   'hotel': 3000,
@@ -12,15 +14,7 @@ const MIN_COST = {
   'palace': 10000
 };
 
-const TRANSLATE_TYPE_HOUSE = {
-  'bungalow': 'Бунгало',
-  'flat': 'Квартира',
-  'hotel': 'Отель',
-  'house': 'Дом',
-  'palace': 'Дворец'
-};
-
-const CAPACITY_OPTIONS = {
+const roomToCapacitys = {
   '1': [1],       // 1 комната — «для 1 гостя»;
   '2': [1, 2],    // 2 комнаты — «для 2 гостей» или «для 1 гостя»;
   '3': [1, 2, 3], // 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
@@ -32,15 +26,14 @@ const MAX_COST = 100000;
 // Получение элементов формы
 
 const formElement = document.querySelector('.ad-form');
-const typeHouseElement = document.querySelector('#type');
-const priceHouseElement = document.querySelector('#price');
+const houseTypeElement = document.querySelector('#type');
+const housePriceElement = document.querySelector('#price');
 const sliderElement = document.querySelector('.ad-form__slider');
 const roomCountElement = document.querySelector('#room_number');
 const capacityElement = document.querySelector('#capacity');
 const timeinElement = document.querySelector('#timein');
 const timeoutElement = document.querySelector('#timeout');
 const addressElement = document.querySelector('#address');
-const capacityOptionElements = capacityElement.children;
 
 const avatarPreviewElement = document.querySelector('.ad-form-header__preview img');
 const avatarChooserElement = document.querySelector('.ad-form__field [type="file"]');
@@ -68,7 +61,7 @@ photoChooserElement.addEventListener('change', () => {
   if (isImageFile(file)) {
     const newPhoto = document.createElement('img');
     newPhoto.src = URL.createObjectURL(file);
-    newPhoto.width = 300;
+    newPhoto.width = PHOTO_PREVIEW_WIDTH;
     photoPreviewElement.innerHTML = '';
     photoPreviewElement.append(newPhoto);
   }
@@ -82,19 +75,16 @@ const pristine = new Pristine(formElement, {
 });
 
 /** Минимальная цена за ночь */
-const getMinCost = () => MIN_COST[typeHouseElement.value];
+const getMinCost = () => typeToMinPrice[houseTypeElement.value];
 /** Возвращает текст ошибки */
-const getCostErrorMessage = () => `${TRANSLATE_TYPE_HOUSE[typeHouseElement.value]} не дешевле ${getMinCost()}`;
+const getCostErrorMessage = () => `${offerTypeToName[houseTypeElement.value]} не дешевле ${getMinCost()}`;
 
 // Подключение и привязка слайдера
 noUiSlider.create(sliderElement, {
   range: {
     min: 0,
-    '40%': 5000,
-    '60%': 10000,
     max: MAX_COST,
   },
-  padding: [getMinCost(), 0],
   start: getMinCost(),
   step: 1,
   connect: 'lower',
@@ -108,13 +98,20 @@ noUiSlider.create(sliderElement, {
   },
 });
 
+// Сброс слайдера
+const resetSlider = () => {
+  sliderElement.noUiSlider.updateOptions({
+    start: getMinCost(),
+  });
+};
+
 sliderElement.noUiSlider.on('slide', () => {
-  priceHouseElement.value = sliderElement.noUiSlider.get();
-  pristine.validate(priceHouseElement);
+  housePriceElement.value = sliderElement.noUiSlider.get();
+  pristine.validate(housePriceElement);
 });
 
-priceHouseElement.addEventListener('input', () => {
-  sliderElement.noUiSlider.set(priceHouseElement.value);
+housePriceElement.addEventListener('input', () => {
+  sliderElement.noUiSlider.set(housePriceElement.value);
 });
 
 // Создание маркера и привязка его к полю адрес
@@ -135,58 +132,36 @@ const newMarker = L.marker(
 
 newMarker.addTo(map);
 
-newMarker.on('moveend', (evt) => {
-  const { lat, lng } = evt.target.getLatLng();
-  addressElement.value = `${lat}, ${lng}`;
+const onMoveendMarker = () => {
+  const { lat, lng } = newMarker.getLatLng();
+  addressElement.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   pristine.validate(addressElement);
-});
+};
+newMarker.on('moveend', onMoveendMarker);
 
 /** Возрат маркера в центральное положение */
 const resetNewMarker = () => newMarker.setLatLng(getAddressBegin());
 
 // Проверка цены за ночь
-pristine.addValidator(priceHouseElement, (value) => (value >= getMinCost()), getCostErrorMessage);
+pristine.addValidator(housePriceElement, (value) => (value >= getMinCost()), getCostErrorMessage);
 
-const onInputTypeHouse = () => {
-  priceHouseElement.placeholder = getMinCost();
-  sliderElement.noUiSlider.updateOptions({
-    padding: [getMinCost(), 0]
-  });
-  if (priceHouseElement.value) {
-    pristine.validate(priceHouseElement);
+const onHouseTypeInput = () => {
+  housePriceElement.placeholder = getMinCost();
+  if (housePriceElement.value) {
+    pristine.validate(housePriceElement);
   }
 };
-
-typeHouseElement.addEventListener('input', onInputTypeHouse);
-
+houseTypeElement.addEventListener('input', onHouseTypeInput);
 
 // Подходит ли опция по количеству мест, выбранному количеству комнат
-const isCorrectCapacity = (capacityValue) => CAPACITY_OPTIONS[roomCountElement.value].some((value) => (+capacityValue === +value));
-
-// Запретить выбор неподходящего числа мест
-const onSelectCapacityOption = () => {
-  for (const element of capacityOptionElements) {
-    if (isCorrectCapacity(element.value)) {
-      element.removeAttribute('disabled');
-    } else {
-      element.setAttribute('disabled', '');
-    }
-  }
-};
-
-onSelectCapacityOption();
+const matchCorrectCapacity = (capacityValue) => roomToCapacitys[roomCountElement.value].some((value) => (+capacityValue === +value));
 
 // Валидация количества комнат и мест
-pristine.addValidator(capacityElement, (value) => isCorrectCapacity(value), 'Это не подходит');
-
-roomCountElement.addEventListener('input', () => {
-  onSelectCapacityOption();
-  pristine.validate(capacityElement);
-});
+pristine.addValidator(capacityElement, (value) => matchCorrectCapacity(value), 'Это не подходит');
 
 // Синхронизация времени въезда и выезда
-timeinElement.addEventListener('input', () => (timeoutElement.value = timeinElement.value));
-timeoutElement.addEventListener('input', () => (timeinElement.value = timeoutElement.value));
+timeinElement.addEventListener('input', () => { timeoutElement.value = timeinElement.value; });
+timeoutElement.addEventListener('input', () => { timeinElement.value = timeoutElement.value; });
 
 /** Добавляет действие к событию для случая успешной валидации */
 const addEventSubmitToForm = (onSuccess) => {
@@ -204,12 +179,14 @@ const getFormData = () => new FormData(formElement);
 // Возрат формы и маркера в исходное состояние
 const resetForm = () => {
   formElement.reset();
-  onInputTypeHouse();
-  onSelectCapacityOption();
   pristine.reset();
+  onHouseTypeInput();
   resetNewMarker();
+  onMoveendMarker();
+  resetSlider();
   photoPreviewElement.innerHTML = '';
   avatarPreviewElement.src = DEFAULT_AVATAR;
+  map.setView(getAddressBegin(), 13);
 };
 
 export { addEventSubmitToForm, getFormData, resetForm };

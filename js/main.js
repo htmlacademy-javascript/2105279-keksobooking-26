@@ -19,40 +19,44 @@ const onMarkerUpdate = () => {
 addEventUpdateFilter(debounce(onMarkerUpdate));
 
 // Перевод страницы в начальное состояние
-const onResetPage = () => {
+const resetPage = () => {
   resetForm();
   resetFilter();
   onMarkerUpdate();
 };
-resetElement.addEventListener('click', onResetPage);
+resetElement.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetPage();
+});
 
 // Добавляем обработчик отправки формы
-const onSendData = () => {
+const onFormSubmit = () => {
   disableSubmitButton();
   sendData(
     () => {
       createMessage('#success');
       enableSubmitButton();
-      onResetPage();
+      resetPage();
     },
-    () => createMessage('#error', onSendData, enableSubmitButton),
+    () => createMessage('#error', enableSubmitButton, enableSubmitButton),
     getFormData());
 };
-addEventSubmitToForm(onSendData);
+addEventSubmitToForm(onFormSubmit);
 
 // Получаем данные с сервера и добавляем на карту
-const onGetData = () => {
+const onMapLoad = () => {
   enableForm();
   getData(
     (data) => {
       dataAdvs = data;
       onMarkerUpdate();
       enableFilter();
+      resetForm();
     },
-    () => createMessage('#error_load', onGetData, disableFilter));
+    () => createMessage('#error_load', onMapLoad, disableFilter));
 };
 
 // Инициализация карты
 map
-  .on('load', onGetData)
+  .on('load', onMapLoad)
   .setView(getAddressBegin(), 13);
