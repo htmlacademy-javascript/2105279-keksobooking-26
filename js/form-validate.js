@@ -4,7 +4,7 @@ const FILE_TYPES = ['bmp', 'gif', 'jpg', 'jpeg', 'png'];
 const DEFAULT_AVATAR = 'img/muffin-grey.svg';
 const MAIN_PIN_URL = 'img/main-pin.svg';
 
-const MIN_COST = {
+const typeToMinPrice = {
   'bungalow': 0,
   'flat': 1000,
   'hotel': 3000,
@@ -12,7 +12,7 @@ const MIN_COST = {
   'palace': 10000
 };
 
-const TRANSLATE_TYPE_HOUSE = {
+const offerTypeToName = {
   'bungalow': 'Бунгало',
   'flat': 'Квартира',
   'hotel': 'Отель',
@@ -20,7 +20,7 @@ const TRANSLATE_TYPE_HOUSE = {
   'palace': 'Дворец'
 };
 
-const CAPACITY_OPTIONS = {
+const roomToCapacitys = {
   '1': [1],       // 1 комната — «для 1 гостя»;
   '2': [1, 2],    // 2 комнаты — «для 2 гостей» или «для 1 гостя»;
   '3': [1, 2, 3], // 3 комнаты — «для 3 гостей», «для 2 гостей» или «для 1 гостя»;
@@ -81,9 +81,9 @@ const pristine = new Pristine(formElement, {
 });
 
 /** Минимальная цена за ночь */
-const getMinCost = () => MIN_COST[typeHouseElement.value];
+const getMinCost = () => typeToMinPrice[typeHouseElement.value];
 /** Возвращает текст ошибки */
-const getCostErrorMessage = () => `${TRANSLATE_TYPE_HOUSE[typeHouseElement.value]} не дешевле ${getMinCost()}`;
+const getCostErrorMessage = () => `${offerTypeToName[typeHouseElement.value]} не дешевле ${getMinCost()}`;
 
 // Подключение и привязка слайдера
 noUiSlider.create(sliderElement, {
@@ -162,7 +162,7 @@ typeHouseElement.addEventListener('input', onInputTypeHouse);
 
 
 // Подходит ли опция по количеству мест, выбранному количеству комнат
-const matchCorrectCapacity = (capacityValue) => CAPACITY_OPTIONS[roomCountElement.value].some((value) => (+capacityValue === +value));
+const matchCorrectCapacity = (capacityValue) => roomToCapacitys[roomCountElement.value].some((value) => (+capacityValue === +value));
 
 // Валидация количества комнат и мест
 pristine.addValidator(capacityElement, (value) => matchCorrectCapacity(value), 'Это не подходит');

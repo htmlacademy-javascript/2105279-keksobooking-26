@@ -1,6 +1,6 @@
-const OFFER_TYPE = {
-  flat: 'Квартира',
+const offerTypeToName = {
   bungalow: 'Бунгало',
+  flat: 'Квартира',
   house: 'Дом',
   palace: 'Дворец',
   hotel: 'Отель'
@@ -30,7 +30,7 @@ const createCard = ({ author, offer }) => {
   if (!price) {
     replaceTextContent('.popup__text--price', price);
   }
-  replaceTextContent('.popup__type', OFFER_TYPE[type]);
+  replaceTextContent('.popup__type', offerTypeToName[type]);
   replaceTextContent('.popup__text--capacity', `${rooms} комнаты для ${guests} гостей`, !!rooms && !!guests);
   replaceTextContent('.popup__text--time', `Заезд после ${checkin}, выезд до ${checkout}`, !!checkin && !!checkout);
   replaceTextContent('.popup__description', description);
