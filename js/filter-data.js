@@ -20,12 +20,12 @@ const featureElements = [...document.querySelectorAll('#housing-features [type="
 let checkedFeatures = [];
 
 // Функции соответствия фильтрам
-const isTypeHouse = (adv) => (typeHouseElement.value === TYPE_HOUSE_DEFAULT || adv.offer.type === typeHouseElement.value);
-const isPriceLimit = (value) => (PRICE_LIMIT[priceHouseElement.value][0] <= value && PRICE_LIMIT[priceHouseElement.value][1] > value);
-const isPriceHouse = (adv) => adv.offer.price ? isPriceLimit(adv.offer.price) : priceHouseElement.value === PRICE_HOUSE_DEFAULT;
-const isRoomCount = (adv) => (roomCountElement.value === ROOM_COUNT_DEFAULT || adv.offer.rooms === +roomCountElement.value);
-const isGuestCount = (adv) => (guestCountElement.value === GUEST_COUNT_DEFAULT || adv.offer.guests === +guestCountElement.value);
-const isFeature = (adv) => adv.offer.features ?
+const matchHouseType = (adv) => (typeHouseElement.value === TYPE_HOUSE_DEFAULT || adv.offer.type === typeHouseElement.value);
+const matchPriceLimit = (value) => (PRICE_LIMIT[priceHouseElement.value][0] <= value && PRICE_LIMIT[priceHouseElement.value][1] > value);
+const matchHousePrice = (adv) => adv.offer.price ? matchPriceLimit(adv.offer.price) : priceHouseElement.value === PRICE_HOUSE_DEFAULT;
+const matchRoomCount = (adv) => (roomCountElement.value === ROOM_COUNT_DEFAULT || adv.offer.rooms === +roomCountElement.value);
+const matchGuestCount = (adv) => (guestCountElement.value === GUEST_COUNT_DEFAULT || adv.offer.guests === +guestCountElement.value);
+const matchFeature = (adv) => adv.offer.features ?
   checkedFeatures.every((element) => adv.offer.features.some((feature) => element.value === feature)) :
   !checkedFeatures.length;
 
@@ -34,11 +34,11 @@ const filterData = (advs) => {
   const result = [];
   for (const adv of advs) {
     if (
-      isTypeHouse(adv) &&
-      isPriceHouse(adv) &&
-      isRoomCount(adv) &&
-      isGuestCount(adv) &&
-      isFeature(adv)
+      matchHouseType(adv) &&
+      matchHousePrice(adv) &&
+      matchRoomCount(adv) &&
+      matchGuestCount(adv) &&
+      matchFeature(adv)
     ) {
       result.push(adv);
       if (result.length === MAX_VIEW_ADV) {
