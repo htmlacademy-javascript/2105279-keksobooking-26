@@ -46,7 +46,6 @@ addEventSubmitToForm(onFormSubmit);
 // Получаем данные с сервера и добавляем на карту
 const onMapLoad = () => {
   enableForm();
-  resetForm();
   getData(
     (data) => {
       dataAdvs = data;
