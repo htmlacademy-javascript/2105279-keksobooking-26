@@ -4,7 +4,7 @@ const PRICE_HOUSE_DEFAULT = 'any';
 const ROOM_COUNT_DEFAULT = 'any';
 const GUEST_COUNT_DEFAULT = 'any';
 
-const limitToPrices = {
+const optionToRange = {
   any: [0, 100000],
   low: [0, 10000],
   middle: [10000, 50000],
@@ -21,7 +21,7 @@ let checkedFeatures = [];
 
 // Функции соответствия фильтрам
 const matchHouseType = (adv) => (typeHouseElement.value === TYPE_HOUSE_DEFAULT || adv.offer.type === typeHouseElement.value);
-const matchPriceLimit = (value) => (limitToPrices[priceHouseElement.value][0] <= value && limitToPrices[priceHouseElement.value][1] > value);
+const matchPriceLimit = (value) => (optionToRange[priceHouseElement.value][0] <= value && optionToRange[priceHouseElement.value][1] > value);
 const matchHousePrice = (adv) => adv.offer.price ? matchPriceLimit(adv.offer.price) : priceHouseElement.value === PRICE_HOUSE_DEFAULT;
 const matchRoomCount = (adv) => (roomCountElement.value === ROOM_COUNT_DEFAULT || adv.offer.rooms === +roomCountElement.value);
 const matchGuestCount = (adv) => (guestCountElement.value === GUEST_COUNT_DEFAULT || adv.offer.guests === +guestCountElement.value);
