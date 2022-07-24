@@ -158,6 +158,7 @@ const matchCorrectCapacity = (capacityValue) => roomToCapacitys[roomCountElement
 
 // Валидация количества комнат и мест
 pristine.addValidator(capacityElement, (value) => matchCorrectCapacity(value), 'Это не подходит');
+roomCountElement.addEventListener('change', () => pristine.validate(capacityElement));
 
 // Синхронизация времени въезда и выезда
 timeinElement.addEventListener('input', () => { timeoutElement.value = timeinElement.value; });
