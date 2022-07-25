@@ -132,12 +132,12 @@ const newMarker = L.marker(
 
 newMarker.addTo(map);
 
-const onMoveendMarker = () => {
+const onMarkerMoveend = () => {
   const { lat, lng } = newMarker.getLatLng();
   addressElement.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
   pristine.validate(addressElement);
 };
-newMarker.on('moveend', onMoveendMarker);
+newMarker.on('moveend', onMarkerMoveend);
 
 /** Возрат маркера в центральное положение */
 const resetNewMarker = () => newMarker.setLatLng(getAddressBegin());
@@ -183,7 +183,7 @@ const resetForm = () => {
   pristine.reset();
   onHouseTypeInput();
   resetNewMarker();
-  onMoveendMarker();
+  onMarkerMoveend();
   resetSlider();
   photoPreviewElement.innerHTML = '';
   avatarPreviewElement.src = DEFAULT_AVATAR;
